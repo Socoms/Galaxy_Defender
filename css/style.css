@@ -1,0 +1,503 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a2e 0%, #1a1a3e 50%, #0a0a2e 100%);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+canvas {
+    background: linear-gradient(135deg, #0a0a2e 0%, #1a1a3e 50%, #0a0a2e 100%);
+    display: block;
+    border: 3px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    border-radius: 5px;
+    outline: none; /* 포커스 시 outline 제거 */
+}
+
+canvas:focus {
+    outline: none;
+    border: 3px solid #00ffff;
+}
+
+/* 화면 오버레이 */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 46, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    backdrop-filter: blur(2px);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* 게임 오버 화면 스크롤 없음 */
+#gameOverScreen {
+    overflow: hidden;
+}
+
+#gameOverScreen .game-over-content {
+    overflow: visible;
+}
+
+.screen.hidden {
+    display: none;
+}
+
+/* 게임 타이틀 */
+.game-title {
+    font-size: clamp(1.5em, 5vw, 2.5em);
+    color: #00ffff;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8),
+                 0 0 40px rgba(0, 255, 255, 0.6),
+                 0 0 60px rgba(0, 255, 255, 0.4);
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+    text-align: center;
+    padding: 0 10px;
+    word-wrap: break-word;
+    line-height: 1.2;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+.subtitle {
+    color: #ffffff;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 350px;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    min-width: 200px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #00ffff 0%, #00ccff 100%);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #666 0%, #444 100%);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #777 0%, #555 100%);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* 최고 점수 표시 */
+.high-score {
+    margin-top: 30px;
+    text-align: center;
+    color: #fff;
+}
+
+.high-score p:first-child {
+    font-size: 1em;
+    opacity: 0.7;
+    margin-bottom: 10px;
+}
+
+.score-value {
+    font-size: 2em;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    font-weight: bold;
+}
+
+/* 게임 오버 화면 */
+.game-over-title {
+    font-size: clamp(1.8em, 5vw, 2.5em);
+    color: #ff0000;
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.8),
+                 0 0 40px rgba(255, 0, 0, 0.6);
+    margin-bottom: 15px;
+    animation: shake 0.5s ease-in-out;
+    text-align: center;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.game-over-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 15px;
+    width: 100%;
+    max-width: 500px;
+    padding: 5px;
+    box-sizing: border-box;
+    align-items: start;
+    justify-items: center;
+}
+
+.score-display {
+    text-align: center;
+    color: #fff;
+    min-width: 0;
+    flex-shrink: 0;
+    padding: 3px;
+    margin: 0;
+}
+
+/* 게임 오버 화면의 버튼은 전체 너비 */
+#gameOverScreen .btn {
+    grid-column: 1 / -1;
+    margin-top: 8px;
+    padding: 12px 30px;
+    font-size: 1em;
+}
+
+.score-display p:first-child {
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+.score-display .score-value {
+    font-size: 1.3em;
+    line-height: 1.2;
+}
+
+/* 일시정지 화면 */
+#pauseScreen h2 {
+    font-size: 2.5em;
+    color: #ffff00;
+    text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+    margin-bottom: 40px;
+}
+
+#pauseScreen .btn {
+    margin: 10px 0;
+}
+
+/* 업그레이드 상점 */
+.shop-title {
+    font-size: 2.5em;
+    color: #00ffff;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    margin-bottom: 30px;
+}
+
+.shop-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.points-display {
+    font-size: 1.5em;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    margin-bottom: 20px;
+}
+
+.upgrade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.upgrade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.upgrade-info {
+    flex: 1;
+    text-align: left;
+}
+
+.upgrade-info h3 {
+    color: #00ffff;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
+
+.upgrade-info p {
+    color: #fff;
+    margin: 3px 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.upgrade-item .btn {
+    min-width: 100px;
+    padding: 10px 20px;
+    font-size: 1em;
+}
+
+/* 설정 화면 */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    gap: 15px;
+}
+
+.setting-info {
+    flex: 1;
+    text-align: left;
+}
+
+.setting-info h3 {
+    color: #00ffff;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.setting-info p {
+    color: #fff;
+    margin: 5px 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.setting-info .score-value {
+    font-size: 1.2em;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* 토글 스위치 */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    min-width: 60px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #444;
+    transition: 0.3s;
+    border-radius: 30px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+}
+
+.toggle-switch input:focus + .toggle-slider {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+/* 라이트 모드 스타일 */
+body.light-mode {
+    background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 50%, #e0e0e0 100%);
+}
+
+body.light-mode .game-container canvas {
+    background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 50%, #e0e0e0 100%);
+    border: 3px solid #0066cc;
+    box-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
+}
+
+body.light-mode .screen {
+    background: rgba(240, 240, 240, 0.5);
+}
+
+body.light-mode .game-title {
+    color: #0066cc;
+    text-shadow: 0 0 20px rgba(0, 102, 204, 0.8),
+                 0 0 40px rgba(0, 102, 204, 0.6),
+                 0 0 60px rgba(0, 102, 204, 0.4);
+}
+
+body.light-mode .subtitle {
+    color: #333;
+}
+
+body.light-mode .high-score {
+    color: #333;
+}
+
+body.light-mode .score-value {
+    color: #0066cc;
+    text-shadow: 0 0 10px rgba(0, 102, 204, 0.8);
+}
+
+body.light-mode .shop-title {
+    color: #0066cc;
+    text-shadow: 0 0 20px rgba(0, 102, 204, 0.8);
+}
+
+body.light-mode .setting-info h3 {
+    color: #0066cc;
+}
+
+body.light-mode .setting-info p {
+    color: #333;
+}
+
+body.light-mode .setting-item {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(0, 102, 204, 0.3);
+}
+
+body.light-mode .upgrade-item {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(0, 102, 204, 0.3);
+}
+
+body.light-mode .upgrade-info h3 {
+    color: #0066cc;
+}
+
+body.light-mode .upgrade-info p {
+    color: #333;
+}
+
+body.light-mode .btn-primary {
+    background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
+}
+
+body.light-mode .btn-primary:hover {
+    background: linear-gradient(135deg, #0080ff 0%, #0066cc 100%);
+    box-shadow: 0 0 30px rgba(0, 102, 204, 0.8);
+}
+
+body.light-mode .btn-secondary {
+    background: linear-gradient(135deg, #888 0%, #666 100%);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+body.light-mode .btn-secondary:hover {
+    background: linear-gradient(135deg, #999 0%, #777 100%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}

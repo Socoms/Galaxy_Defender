@@ -1,0 +1,192 @@
+<!DOCTYPE html>  
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Defender</title>
+
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+
+  <body>
+    <div class="game-container">
+      <canvas id="gameCanvas" tabindex="0"></canvas>
+      
+      <!-- 메뉴 화면 -->
+      <div id="menuScreen" class="screen">
+        <h1 class="game-title">🚀 GALAXY DEFENDER</h1>
+        <div class="menu-content">
+          <p class="subtitle">우주를 구하세요!</p>
+          <button id="startBtn" class="btn btn-primary">게임 시작</button>
+          <button id="shopBtn" class="btn btn-secondary">업그레이드 상점</button>
+          <button id="settingsBtn" class="btn btn-secondary">설정</button>
+          <div class="high-score">
+            <p>최고 점수</p>
+            <p id="highScoreDisplay" class="score-value">0</p>
+            <p>보유 코인</p>
+            <p id="totalPointsDisplay" class="score-value">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설정 화면 -->
+      <div id="settingsScreen" class="screen hidden">
+        <h2 class="shop-title">⚙️ 설정</h2>
+        <div class="shop-content">
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>게임 정보</h3>
+                <p>조작법: 방향키로 이동, 스페이스바로 발사</p>
+                <p>특수 공격: X 키</p>
+                <p>슬로우 모션: Shift 키</p>
+                <p>일시정지: ESC 키</p>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>테마</h3>
+                <p>라이트 모드 / 다크 모드</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>효과음</h3>
+                <p>게임 효과음 켜기/끄기</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="soundEffectsToggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>배경음악</h3>
+                <p>배경음악 켜기/끄기</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="backgroundMusicToggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>데이터 관리</h3>
+                <p>게임 데이터를 초기화할 수 있습니다</p>
+              </div>
+              <button id="resetDataBtn" class="btn btn-secondary" style="min-width: 120px; padding: 10px 20px; font-size: 0.9em;">데이터 초기화</button>
+            </div>
+          </div>
+          <button id="settingsBackBtn" class="btn btn-secondary">메뉴로</button>
+        </div>
+      </div>
+
+      <!-- 업그레이드 상점 화면 -->
+      <div id="shopScreen" class="screen hidden">
+        <h2 class="shop-title">⚙️ 업그레이드 상점</h2>
+        <div class="shop-content">
+          <div class="points-display">
+            <p>보유 코인: <span id="shopPoints" class="score-value">0</span></p>
+          </div>
+          <div class="upgrade-list">
+            <div class="upgrade-item">
+              <div class="upgrade-info">
+                <h3>총알 데미지</h3>
+                <p>레벨: <span id="damageLevel">1</span></p>
+                <p>비용: <span id="damageCost">10</span>코인</p>
+              </div>
+              <button id="buyDamage" class="btn btn-primary">구매</button>
+            </div>
+            <div class="upgrade-item">
+              <div class="upgrade-info">
+                <h3>이동 속도</h3>
+                <p>레벨: <span id="speedLevel">0</span></p>
+                <p>비용: <span id="speedCost">15</span>코인</p>
+              </div>
+              <button id="buySpeed" class="btn btn-primary">구매</button>
+            </div>
+            <div class="upgrade-item">
+              <div class="upgrade-info">
+                <h3>특수 공격 충전</h3>
+                <p>레벨: <span id="chargesLevel">0</span></p>
+                <p>비용: <span id="chargesCost">20</span>코인</p>
+              </div>
+              <button id="buyCharges" class="btn btn-primary">구매</button>
+            </div>
+            <div class="upgrade-item">
+              <div class="upgrade-info">
+                <h3>최대 생명</h3>
+                <p>레벨: <span id="livesLevel">0</span></p>
+                <p>비용: <span id="livesCost">30</span>코인</p>
+              </div>
+              <button id="buyLives" class="btn btn-primary">구매</button>
+            </div>
+          </div>
+          <button id="shopBackBtn" class="btn btn-secondary">메뉴로</button>
+        </div>
+      </div>
+
+      <!-- 일시정지 화면 -->
+      <div id="pauseScreen" class="screen hidden">
+        <h2>일시정지</h2>
+        <button id="resumeBtn" class="btn btn-primary">계속하기</button>
+        <button id="restartBtn" class="btn btn-secondary">다시 시작</button>
+        <button id="menuBtn" class="btn btn-secondary">메뉴로</button>
+      </div>
+
+      <!-- 게임 오버 화면 -->
+      <div id="gameOverScreen" class="screen hidden">
+        <h2 class="game-over-title">GAME OVER</h2>
+        <div class="game-over-content">
+          <div class="score-display">
+            <p>점수</p>
+            <p id="finalScore" class="score-value">0</p>
+          </div>
+          <div class="score-display">
+            <p>최고 점수</p>
+            <p id="finalHighScore" class="score-value">0</p>
+          </div>
+          <div class="score-display">
+            <p>난이도 레벨</p>
+            <p id="finalLevel" class="score-value">1</p>
+          </div>
+          <div class="score-display">
+            <p>게임 시간</p>
+            <p id="finalTime" class="score-value">0초</p>
+          </div>
+          <div class="score-display">
+            <p>총 처치</p>
+            <p id="finalKills" class="score-value">0</p>
+          </div>
+          <div class="score-display">
+            <p>최대 콤보</p>
+            <p id="finalMaxCombo" class="score-value">0</p>
+          </div>
+          <div class="score-display">
+            <p>획득 점수</p>
+            <p id="earnedPoints" class="score-value">0</p>
+          </div>
+          <div class="score-display">
+            <p>수집한 코인</p>
+            <p id="finalCoins" class="score-value">0</p>
+          </div>
+          <button id="restartBtn2" class="btn btn-primary">다시 시작</button>
+          <button id="menuBtn2" class="btn btn-secondary">메뉴로</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/game_storage.js"></script>
+    <script src="js/game_audio.js"></script>
+    <script src="js/game_objects.js"></script>
+    <script src="js/game_collision.js"></script>
+    <script src="js/game_ui.js"></script>
+    <script src="js/game_screen.js"></script>
+    <script src="js/option_screen.js"></script>
+    <script src="js/main_screen.js"></script>
+  </body>
+</html>
