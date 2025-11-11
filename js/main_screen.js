@@ -1312,11 +1312,33 @@ function update() {
   });
 
   bullets.forEach(b => {
-    ctx.fillStyle = b.color || "yellow";
+    // 라이트 모드에서는 더 진한 색상 사용
+    if (gameSettings.lightMode) {
+      if (b.color === "yellow") {
+        ctx.fillStyle = "#ff6600"; // 주황색으로 변경
+        ctx.strokeStyle = "#ff3300"; // 진한 주황색 테두리
+        ctx.lineWidth = 1;
+        ctx.strokeRect(b.x - 0.5, b.y - 0.5, b.width + 1, b.height + 1);
+      } else if (b.color === "cyan") {
+        ctx.fillStyle = "#0066ff"; // 진한 파란색으로 변경
+        ctx.strokeStyle = "#0033cc"; // 더 진한 파란색 테두리
+        ctx.lineWidth = 1;
+        ctx.strokeRect(b.x - 0.5, b.y - 0.5, b.width + 1, b.height + 1);
+      } else {
+        ctx.fillStyle = b.color || "#ff6600";
+      }
+    } else {
+      ctx.fillStyle = b.color || "yellow";
+    }
+    
     ctx.fillRect(b.x, b.y, b.width, b.height);
     
     if (b.color === "cyan") {
-      ctx.strokeStyle = "white";
+      if (gameSettings.lightMode) {
+        ctx.strokeStyle = "#0033cc";
+      } else {
+        ctx.strokeStyle = "white";
+      }
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(b.x + b.width / 2, b.y);

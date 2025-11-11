@@ -18,12 +18,12 @@ function updateStars() {
 function drawStars() {
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
   if (gameSettings.lightMode) {
-    gradient.addColorStop(0, "#e0e0e0");
-    gradient.addColorStop(0.5, "#f5f5f5");
-    gradient.addColorStop(1, "#e0e0e0");
+    gradient.addColorStop(0, "#d0d0d0");
+    gradient.addColorStop(0.5, "#e8e8e8");
+    gradient.addColorStop(1, "#d0d0d0");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#333";
+    ctx.fillStyle = "#000"; // 라이트 모드에서는 검은색 별로 대비 향상
   } else {
     gradient.addColorStop(0, "#0a0a2e");
     gradient.addColorStop(0.5, "#1a1a3e");

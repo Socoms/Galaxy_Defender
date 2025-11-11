@@ -133,6 +133,7 @@ function spawnEffect(x, y, intensity = 1) {
 
 // ▶ 총알 발사 파티클 효과
 function spawnBulletParticle(x, y) {
+  const particleColor = gameSettings.lightMode ? "#ff6600" : "yellow";
   for (let i = 0; i < 3; i++) {
     effects.push({
       x,
@@ -141,7 +142,7 @@ function spawnBulletParticle(x, y) {
       dy: -Math.random() * 1 - 0.5,
       radius: 1,
       life: 15,
-      color: "yellow"
+      color: particleColor
     });
   }
 }
